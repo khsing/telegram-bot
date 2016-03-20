@@ -14,7 +14,7 @@ do
     if hash and keyword and text then
       redis:sadd(hash, keyword)
       redis:sadd(keyword_hash, text)
-      return 'woof woof!'
+      return '🐶^o^!'
     end
   end
 
@@ -47,23 +47,35 @@ do
     for i = 1, #keywords do
       local keyword = keywords[i]
       if string.find(msgtext, keyword) then
-        vardump(msgtext)
-        vardump(keyword)
         return get_woof_text(msg, keyword)
       end
     end
   end
 
+  local function pop_woof (msg, keyword, text)
+    local hash = get_woof_hash(msg)
+    local keyword_hash = hash..':'..keyword
+    if hash and keyword and text then
+      redis:srem(keyword_hash, text)
+      return "🐶🤐"
+    end
+  end
+
   local function run(msg, matches)
-    if matches[1]:lower() == '!woof' then
-      local keyword = matches[2]
-      local text = matches[3]
+    local command = matches[1]:lower()
+    local keyword = matches[2]
+    local text = matches[3]
+    if command == '!woof' then
       if keyword and text then
         return add_woof(msg, keyword, text)
       elseif keyword and not text then
         return list_woof(msg, keyword)
       else
-        return "汪，汪汪！"
+        return "🐶🐶"
+      end
+    elseif command == "!unwoof" then
+      if keyword and text then
+        return pop_woof(msg, keyword, text)
       end
     else
       return get_woof(msg)
@@ -75,12 +87,14 @@ do
     usage = {
       "!woof: Just woof",
       "!woof keyword@text: Add keyword trigger",
-      "!woof keyword: list keyword text list"
+      "!unwoof keyword@text: remove keyword trigger",
+      "!woof keyword: list keyword text"
     },
     patterns = {
-      "^(![Ww]oof)$",
-      "^(![Ww]oof) ([^%s]+)@(.+)",
-      "^(![Ww]oof) ([^%s]+)$",
+      "^(!woof)$",
+      "^(!woof) ([^%s]+)@(.+)",
+      "^(!unwoof) ([^%s]+)@(.+)",
+      "^(!woof) ([^%s]+)$",
       ".+"
     },
     run = run
