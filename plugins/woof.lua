@@ -9,8 +9,6 @@ do
   end
 
   local function add_woof(msg, keyword, text)
-    vardump(keyword)
-    vardump(text)
     local hash = get_woof_hash(msg)
     local keyword_hash = hash..':'..keyword
     if hash and keyword and text then
