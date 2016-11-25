@@ -1,10 +1,40 @@
 do
 
 local BASE_URL = "https://api.heweather.com/x3/weather"
+local CITY_HAS_US_AQI = {
+  "北京",
+  "成都",
+  "广州",
+  "上海",
+  "沈阳"
+}
 
-local function get_usaqi()
+local function inTable(tbl, item)
+    for key, value in pairs(tbl) do
+        if value == item then return key end
+    end
+    return false
+end
+
+
+local function get_usaqi(city)
+  local city = city:lower()
   local usaqi = nil
-  local b, code = http.request("http://www.stateair.net/web/rss/1/1.xml")
+  local url = nil
+  if city == "北京" or city == "beijing" then
+    url = "http://www.stateair.net/web/rss/1/1.xml"
+  elseif city == "成都" or city == "chengdu"  then
+    url = "http://www.stateair.net/web/rss/1/2.xml"
+  elseif city == "广州" or city == "guangzhou"  then
+    url = "http://www.stateair.net/web/rss/1/3.xml"
+  elseif city == "上海" or city == "shanghai" then
+    url = "http://www.stateair.net/web/rss/1/4.xml"
+  elseif city == "沈阳" or city == "shenyang" then
+    url = "http://www.stateair.net/web/rss/1/5.xml"
+  else
+    return nil
+  end
+  local b, code = http.request(url)
   if c ~= 200 then
     return feedparser.parse(b).entries[1].summary
   else
@@ -43,8 +73,8 @@ local function get_weather(location)
     temp = temp .. "最高温度："..daily.tmp.max.."度".. "，最低温度："..daily.tmp.min.."度".."\n"
     -- temp = temp .. "风向："..daily.wind.dir.."，风力："..daily.wind.sc.."\n"
     if aqi then temp = temp .. "空气质量："..aqi.city.qlty.."，AQI："..aqi.city.aqi.."，PM2.5："..aqi.city.pm25.."\n" end
-    if city == "北京" then
-      temp = temp .. "美使馆数据：" .. get_usaqi() .. "\n"
+    if inTable(CITY_HAS_US_AQI, city) then
+      temp = temp .. "美使馆数据：" .. get_usaqi(city) .. "\n"
     end
     if suggestion then temp = temp .. "舒适度："..suggestion.comf.brf.."，"..suggestion.comf.txt.."\n" end
     if tomorrow then
@@ -65,13 +95,13 @@ end
 local function run(msg, matches)
   local cmd = matches[1]:lower()
   local keyword = matches[2]
+  if keyword then
+    city = keyword
+  else
+    city = "Beijing"
+  end
   local text = nil
   if cmd == '!tq' then
-    if keyword then
-      city = keyword
-    else
-      city = "Beijing"
-    end
     text = get_weather(city)
   elseif cmd == '!usaqi' then
     text = get_usaqi()
@@ -86,9 +116,8 @@ return {
   description = "weather in that city (Beijing is default)",
   usage = "!tq (city)",
   patterns = {
-    "^(!tq)$",
-    "^(!tq) (.*)$",
-    "^(!usaqi)$"
+    "^(!tq) ?(.*)$",
+    "^(!usaqi) ?(.*)"
   },
   run = run
 }
