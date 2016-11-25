@@ -94,11 +94,9 @@ end
 
 local function run(msg, matches)
   local cmd = matches[1]:lower()
-  local keyword = matches[2]
-  if keyword then
-    local city = keyword
-  else
-    local city = "Beijing"
+  local city = matches[2]
+  if not city then
+    city = "Beijing"
   end
   local text = nil
   if cmd == '!tq' then
