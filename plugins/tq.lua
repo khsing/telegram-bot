@@ -32,11 +32,11 @@ local function get_weather(location)
     local city = basic.city
     local country = basic.cnty
     local temp = country..', '..city.."天气：\n"
-    if alarms:
-      for i, alarm in ipairs(alarms) do
-        temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
-      end
-    end
+    -- if alarms:
+    --   for i, alarm in ipairs(alarms) do
+    --     temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
+    --   end
+    -- end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
     temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .. "，天气：" .. now.cond.txt
     temp = temp .. "，风向：" .. now.wind.dir .. ", 风力：" ..now.wind.sc .. "\n"
@@ -66,12 +66,12 @@ local function get_weather(location)
 end
 
 local function run(msg, matches)
-  local city = 'Beijing'
-
-  if matches[1] ~= '!tq' then
-    city = matches[1]
+  local cmd = matches[1]:lower()
+  local keyword = matches[2]
+  if cmd == '!tq' then
+    city = keyword
     local text = get_weather(city)
-  elseif matches[1] ~= '!usaqi'
+  elseif cmd == '!usaqi'
     local text = get_usaqi()
   end
   if not text then
