@@ -96,15 +96,15 @@ local function run(msg, matches)
   local cmd = matches[1]:lower()
   local keyword = matches[2]
   if keyword then
-    city = keyword
+    local city = keyword
   else
-    city = "Beijing"
+    local city = "Beijing"
   end
   local text = nil
   if cmd == '!tq' then
     text = get_weather(city)
   elseif cmd == '!usaqi' then
-    text = get_usaqi()
+    text = get_usaqi(city)
   end
   if not text then
     text = '现阶段我真的不知道.'
