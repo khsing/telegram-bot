@@ -2,16 +2,25 @@ do
 
 local BASE_URL = "https://api.heweather.com/x3/weather"
 
+local function get_usaqi()
+  local usaqi = nil
+  local b, code = http.return("http://www.stateair.net/web/rss/1/1.xml")
+  if c ~= 200 then usaqi = feedparser.parse(b) end
+  if usaqi then
+    return usaqi.entries[1].summary
+  else
+    return nil
+  end
+end
+
 local function get_weather(location)
   print("Finding weather in ", location)
   location = string.gsub(location," ","+")
   local url = BASE_URL
   url = url..'?city='..location
   url = url..'&key=b61f6ee2c9b9481ebaa7753fe22d40af'
-
   local b, c, h = http.request(url)
   if c ~= 200 then return nil end
-
   local weather = json:decode(b)["HeWeather data service 3.0"][1]
   if weather['status'] == 'ok' then
     local basic = weather["basic"]
@@ -20,16 +29,26 @@ local function get_weather(location)
     local daily = weather["daily_forecast"][1]
     local tomorrow = weather["daily_forecast"][2]
     local suggestion = weather["suggestion"]
-
+    local alerms = weather["alarms"]
     local city = basic.city
     local country = basic.cnty
-    local temp = country..', '..city.."天气预报：\n"
+    local temp = country..', '..city.."天气：\n"
+    if alarms:
+      for i,alarm in ipairs(alerms) do
+        temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
+      end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
-    temp = temp .. "当前温度：" .. now.tmp .. "度，天气：" .. now.cond.txt
+    temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .. "，天气：" .. now.cond.txt
     temp = temp .. "，风向：" .. now.wind.dir .. ", 风力：" ..now.wind.sc .. "\n"
     temp = temp .. "最高温度："..daily.tmp.max.."度".. "，最低温度："..daily.tmp.min.."度".."\n"
     -- temp = temp .. "风向："..daily.wind.dir.."，风力："..daily.wind.sc.."\n"
     if aqi then temp = temp .. "空气质量："..aqi.city.qlty.."，AQI："..aqi.city.aqi.."，PM2.5："..aqi.city.pm25.."\n" end
+    if city == "北京" then
+      local usaqi = get_usaqi()
+      if usaqi then
+        temp = temp .. "美使馆数据：" .. usaqi
+      end
+    end
     if suggestion then temp = temp .. "舒适度："..suggestion.comf.brf.."，"..suggestion.comf.txt.."\n" end
     if tomorrow then
       temp = temp .. "明日预报("..tomorrow.date..")："
@@ -51,8 +70,10 @@ local function run(msg, matches)
 
   if matches[1] ~= '!tq' then
     city = matches[1]
+    local text = get_weather(city)
+  elseif matches[1] ~= '!usaqi'
+    local text = get_usaqi()
   end
-  local text = get_weather(city)
   if not text then
     text = '现阶段我真的不知道.'
   end
@@ -65,6 +86,7 @@ return {
   patterns = {
     "^!tq$",
     "^!tq (.*)$"
+    "^!usaqi$"
   },
   run = run
 }
