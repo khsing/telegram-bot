@@ -117,7 +117,7 @@ return {
   usage = {
     "!tq (city)",
     "!usaqi (city)"
-  }
+  },
   patterns = {
     "^(!tq)$",
     "^(!tq) (.*)$",
