@@ -36,6 +36,7 @@ local function get_weather(location)
       for i, alarm in ipairs(alarms) do
         temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
       end
+    end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
     temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .. "，天气：" .. now.cond.txt
     temp = temp .. "，风向：" .. now.wind.dir .. ", 风力：" ..now.wind.sc .. "\n"
