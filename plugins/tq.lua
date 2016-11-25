@@ -44,10 +44,7 @@ local function get_weather(location)
     -- temp = temp .. "风向："..daily.wind.dir.."，风力："..daily.wind.sc.."\n"
     if aqi then temp = temp .. "空气质量："..aqi.city.qlty.."，AQI："..aqi.city.aqi.."，PM2.5："..aqi.city.pm25.."\n" end
     if city == "北京" then
-      local usaqi = get_usaqi()
-      if usaqi then
-        temp = temp .. "美使馆数据：" .. usaqi
-      end
+      temp = temp .. "美使馆数据：" .. get_usaqi() .. "\n"
     end
     if suggestion then temp = temp .. "舒适度："..suggestion.comf.brf.."，"..suggestion.comf.txt.."\n" end
     if tomorrow then
@@ -71,7 +68,7 @@ local function run(msg, matches)
   if cmd == '!tq' then
     city = keyword
     local text = get_weather(city)
-  elseif cmd == '!usaqi'
+  elseif cmd == '!usaqi' then
     local text = get_usaqi()
   end
   if not text then
@@ -85,7 +82,7 @@ return {
   usage = "!tq (city)",
   patterns = {
     "^!tq$",
-    "^!tq (.*)$"
+    "^!tq (.*)$",
     "^!usaqi$"
   },
   run = run
