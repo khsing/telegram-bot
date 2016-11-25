@@ -4,7 +4,7 @@ local BASE_URL = "https://api.heweather.com/x3/weather"
 
 local function get_usaqi()
   local usaqi = nil
-  local b, code = http.return("http://www.stateair.net/web/rss/1/1.xml")
+  local b, code = http.request("http://www.stateair.net/web/rss/1/1.xml")
   if c ~= 200 then
     return feedparser.parse(b).entries[1].summary
   else
@@ -28,12 +28,12 @@ local function get_weather(location)
     local daily = weather["daily_forecast"][1]
     local tomorrow = weather["daily_forecast"][2]
     local suggestion = weather["suggestion"]
-    local alerms = weather["alarms"]
+    local alarms = weather["alarms"]
     local city = basic.city
     local country = basic.cnty
     local temp = country..', '..city.."天气：\n"
     if alarms:
-      for i,alarm in ipairs(alerms) do
+      for i, alarm in ipairs(alarms) do
         temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
       end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
