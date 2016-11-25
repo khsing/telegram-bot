@@ -66,7 +66,11 @@ local function run(msg, matches)
   local cmd = matches[1]:lower()
   local keyword = matches[2]
   if cmd == '!tq' then
-    city = keyword
+    if keyword then
+      city = keyword
+    else
+      city = "Beijing"
+    end
     local text = get_weather(city)
   elseif cmd == '!usaqi' then
     local text = get_usaqi()
