@@ -114,10 +114,15 @@ end
 
 return {
   description = "weather in that city (Beijing is default)",
-  usage = "!tq (city)",
+  usage = {
+    "!tq (city)",
+    "!usaqi (city)"
+  }
   patterns = {
-    "^(!tq) ?(.*)$",
-    "^(!usaqi) ?(.*)"
+    "^(!tq)$",
+    "^(!tq) (.*)$",
+    "^(!usaqi)$"
+    "^(!usaqi) (.*)"
   },
   run = run
 }
