@@ -6,7 +6,7 @@ local function get_usaqi()
   local usaqi = nil
   local b, code = http.return("http://www.stateair.net/web/rss/1/1.xml")
   if c ~= 200 then usaqi = feedparser.parse(b) end
-  if usaqi then
+  if usaqi != nil then
     return usaqi.entries[1].summary
   else
     return nil
