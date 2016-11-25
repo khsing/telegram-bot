@@ -18,6 +18,7 @@ local function get_weather(location)
     local aqi = weather["aqi"]
     local now = weather["now"]
     local daily = weather["daily_forecast"][1]
+    local tomorrow = weather["daily_forecast"][2]
     local suggestion = weather["suggestion"]
 
     local city = basic.city
@@ -30,6 +31,15 @@ local function get_weather(location)
     -- temp = temp .. "风向："..daily.wind.dir.."，风力："..daily.wind.sc.."\n"
     if aqi then temp = temp .. "空气质量："..aqi.city.qlty.."，AQI："..aqi.city.aqi.."，PM2.5："..aqi.city.pm25.."\n" end
     if suggestion then temp = temp .. "舒适度："..suggestion.comf.brf.."，"..suggestion.comf.txt.."\n" end
+    if tomorrow then
+      temp = temp .. "明日预报("..tomorrow.date..")："
+      temp = temp .. tomorrow.astro.sr .. " 日出 " ..tomorrow.astro.ss .. " 日落，"
+      temp = temp .. "白天" .. tomorrow.cond.txt_d .. "，夜间" .. tomorrow.cond.txt_n .."，"
+      temp = temp .. "最高温度" .. tomorrow.tmp.max .. "度，最低温度" .. tomorrow.tmp.min .. "度，"
+      temp = temp .. "相对湿度" .. tomorrow.hum .. "%，"
+      temp = temp .. "降水概率" .. tomorrow.pop .. "%，"
+      temp = temp .. tomorrow.wind.dir .. "风" .. tomorrow.wind.sc .. "级，风速:" .. tomorrow.wind.spd .." kmph\n"
+    end
     return temp
   else
     return "获取天气失败！"
