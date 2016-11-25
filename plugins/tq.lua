@@ -5,9 +5,8 @@ local BASE_URL = "https://api.heweather.com/x3/weather"
 local function get_usaqi()
   local usaqi = nil
   local b, code = http.return("http://www.stateair.net/web/rss/1/1.xml")
-  if c ~= 200 then usaqi = feedparser.parse(b) end
-  if usaqi != nil then
-    return usaqi.entries[1].summary
+  if c ~= 200 then
+    return feedparser.parse(b).entries[1].summary
   else
     return nil
   end
