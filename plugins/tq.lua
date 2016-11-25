@@ -121,7 +121,7 @@ return {
   patterns = {
     "^(!tq)$",
     "^(!tq) (.*)$",
-    "^(!usaqi)$"
+    "^(!usaqi)$",
     "^(!usaqi) (.*)"
   },
   run = run
