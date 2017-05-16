@@ -1,6 +1,6 @@
 do
 
-local BASE_URL = "https://api.heweather.com/x3/weather"
+local BASE_URL = "https://free-api.heweather.com/v5"
 local CITY_HAS_US_AQI = {
   "北京",
   "成都",
@@ -46,11 +46,13 @@ local function get_weather(location)
   print("Finding weather in ", location)
   location = string.gsub(location," ","+")
   local url = BASE_URL
-  url = url..'?city='..location
-  url = url..'&key=b61f6ee2c9b9481ebaa7753fe22d40af'
-  local b, c, h = http.request(url)
+  url = url..'/weather?key=b61f6ee2c9b9481ebaa7753fe22d40af'
+  url = url..'&city='..location
+  local b, c, h = https.request("https://free-api.heweather.com/v5/weather?key=b61f6ee2c9b9481ebaa7753fe22d40af&city=beijing")
+  -- print(b)
   if c ~= 200 then return nil end
-  local weather = json:decode(b)["HeWeather data service 3.0"][1]
+  local weather = json:decode(b)["HeWeather5"][1]
+  print(weather)
   if weather['status'] == 'ok' then
     local basic = weather["basic"]
     local aqi = weather["aqi"]
@@ -62,11 +64,11 @@ local function get_weather(location)
     local city = basic.city
     local country = basic.cnty
     local temp = country..', '..city.."天气：\n"
-    -- if alarms:
-    --   for i, alarm in ipairs(alarms) do
-    --     temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
-    --   end
-    -- end
+    if alarms then
+      for i, alarm in ipairs(alarms) do
+        temp = temp .. alarm.title .. ":" .. alarm.txt .. "\n"
+      end
+    end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
     temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .. "，天气：" .. now.cond.txt
     temp = temp .. "，风向：" .. now.wind.dir .. ", 风力：" ..now.wind.sc .. "\n"
@@ -108,6 +110,11 @@ local function run(msg, matches)
     text = '现阶段我真的不知道.'
   end
   return text
+end
+
+
+local function cron( ... )
+  -- body
 end
 
 return {
