@@ -48,7 +48,7 @@ local function get_weather(location)
   local url = BASE_URL
   url = url..'/weather?key=b61f6ee2c9b9481ebaa7753fe22d40af'
   url = url..'&city='..location
-  local b, c, h = https.request("https://free-api.heweather.com/v5/weather?key=b61f6ee2c9b9481ebaa7753fe22d40af&city=beijing")
+  local b, c, h = https.request(url)
   -- print(b)
   if c ~= 200 then return nil end
   local weather = json:decode(b)["HeWeather5"][1]
