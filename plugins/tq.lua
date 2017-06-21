@@ -70,7 +70,7 @@ local function get_weather(location)
       end
     end
     temp = temp .. "当地时间："..basic.update.loc.."\n"
-    temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .. "，天气：" .. now.cond.txt
+    temp = temp .. "当前温度：" .. now.tmp .. "度，体感温度：".. now.fl .."，湿度："..now.hum.. "，天气：" .. now.cond.txt
     temp = temp .. "，风向：" .. now.wind.dir .. ", 风力：" ..now.wind.sc .. "\n"
     temp = temp .. "最高温度："..daily.tmp.max.."度".. "，最低温度："..daily.tmp.min.."度".."\n"
     -- temp = temp .. "风向："..daily.wind.dir.."，风力："..daily.wind.sc.."\n"
